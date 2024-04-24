@@ -1,15 +1,10 @@
-const express = require('express');
+const http = require('http');
+const app = require('./app');
 require('dotenv').config();
 
-const registerRoute = require('./routes/Register')
-
+const server = http.createServer(app);
 const PORT = process.env.LOCAL_PORT;
-const app = express();
 
-app.get('/', (req, res) => {
-    res.json({ message: "hello server" });
+server.listen(PORT, () => {
+    console.log(`Server is now listening on http://localhost:${PORT}`)
 })
-
-app.use("/register", registerRoute)
-
-app.listen(PORT, () => console.log(`Server is now listening on http://localhost:${PORT}`))
