@@ -10,7 +10,7 @@ const login_password = async (req, res) => {
 
         // Validate user input
         if (!(email && password)) {
-            res.status(400).send("All input is required");
+            return res.status(201).json({ status: 201, message: "All input is required" });
         }
 
         // Validate if user exist in our database
@@ -22,14 +22,10 @@ const login_password = async (req, res) => {
 
 
         if (user_exist && (await bcrypt.compare(password, user.Password))) {
-
-            const localStorage = user.Email;
-
-            return res.status(200).json(localStorage);
+            return res.status(200).json({ status: 200, message: "Login Success", email: user.Email });
         }
 
-        res.status(400).send("Invalid Credentials");
-
+        return res.status(202).json({ status: 202, message: "Invalid Password" });
 
     } catch (error) {
         console.log(error);
