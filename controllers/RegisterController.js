@@ -10,19 +10,18 @@ const { check_user_exist,
 
 const register_password = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, phoneNumber } = req.body;
-
+        const { firstname, lastname, email, password, phoneNumber } = req.body;
+        
         // Validate user input
-        if (!(firstName && lastName && email && password && phoneNumber)) {
-            res.status(400).send("All input is required");
+        if (!(firstname && lastname && email && password && phoneNumber)) {
+            return res.status(201).json({ status: 201, message: "All input is required" });
         }
 
         // Validate if user exist in our database
         const check_exist = await check_user_exist(email);
         const oldUser = check_exist.length > 0;
         if (oldUser) {
-            console.log(oldUser);
-            return res.status(409).send("User already exist. Please Login");
+            return res.status(202).json({ status: 202, message: "User already exist, please login" });
         }
 
         // Encrypt user password
@@ -32,13 +31,13 @@ const register_password = async (req, res) => {
         const userID = await generateUserId(16);
 
         // Insert new user in database
-        const insert_result = await insert_new_user(userID, email.toLowerCase(), encryptedPassword, firstName, lastName, phoneNumber)
+        const insert_result = await insert_new_user(userID, email.toLowerCase(), encryptedPassword, firstname, lastname, phoneNumber)
         const user = await select_user_by_email(email);
 
         const localStorage = user.Email;
 
         // return new user
-        res.status(201).json(localStorage);
+        return res.status(200).json({ status: 200, message: "Register Success", email: user.Email});
 
     } catch (error) {
         console.log(error);
@@ -51,11 +50,10 @@ const register_pin = async (req, res) => {
 
         // Validate data in local Storage(email) and user input(pin)
         if (!(email)) {
-            res.status(400).send("Please login");
+            return res.status(201).json({ status: 201, message: "Please login"});
         }
-
         if (!(pin)) {
-            res.status(400).send("Please Input pin");
+            return res.status(202).json({ status: 202, message: "Please Input pin"});
         }
 
         // Encypted Pin
@@ -84,10 +82,10 @@ const register_pin = async (req, res) => {
             // save user token
             user.token = token;
 
-            return res.status(200).json(user);
+            return res.status(200).json({ status: 200, message: "Register Pin success", user:user});
         }
 
-        res.status(400).send("Please login");
+        return res.status(203).json({ status: 203, message: "Please register"});
 
     } catch (error) {
         console.log(error);
