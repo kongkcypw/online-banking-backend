@@ -38,11 +38,11 @@ const login_pin = async (req, res) => {
 
         // Validate data in local Storage(email) and user input(pin)
         if (!(email)) {
-            res.status(400).send("Please login");
+            return res.status(201).json({ status: 201, message: "Please login" });
         }
 
         if (!(pin)) {
-            res.status(400).send("Please Input pin");
+            return res.status(202).json({ status: 202, message: "Please Input pin" });
         }
 
         // Validate if user exist in our database
@@ -70,10 +70,10 @@ const login_pin = async (req, res) => {
             // save user token
             user.token = token;
 
-            return res.status(200).json(user);
+            return res.status(200).json({ status: 200, message: "Pin accurate", user: user, token: user.token });
         }
 
-        res.status(400).send("Invalid Credentials");
+        return res.status(203).json({ status: 203, message: "Invalid Credentials" });
 
 
     } catch (error) {
