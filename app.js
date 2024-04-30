@@ -4,6 +4,8 @@ const cors = require('cors');
 const registerRoute = require('./routes/Register')
 const loginRoute = require('./routes/Login')
 const authRoute = require('./routes/Auth')
+const transactionRoute = require('./routes/Transaction')
+const statementRoute = require('./routes/Statement')
 
 const app = express();
 
@@ -23,5 +25,7 @@ app.get('/', (req, res) => {
 app.use("/register", registerRoute)
 app.use("/login", loginRoute)
 app.use("/auth", authRoute)
+app.use("/transaction", transactionRoute)
+app.use("/statement", statementRoute)
 
 module.exports = app;
