@@ -30,8 +30,19 @@ const select_user_by_email = async (email) => {
     }
 }
 
+const update_user_set_pin = async (email, pin) => {
+    try {
+        const query = `UPDATE User SET Pin = ? WHERE Email = ?`;
+        const [result] = await promisePool.query(query, [pin, email])
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     check_user_exist,
     insert_new_user,
-    select_user_by_email
+    select_user_by_email,
+    update_user_set_pin
 }
