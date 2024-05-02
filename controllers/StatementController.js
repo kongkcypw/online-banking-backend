@@ -2,16 +2,15 @@ const { get_statement_by_accountID, get_source_detail, get_all_source_details } 
 const { removeProperties } = require("./Utils");
 
 const tableDetail = [
-    { type: `topup`, table: `TopUp`, primary_key: `TopUpID` },
-    { type: "bill", table: "Bill", primary_key: "BillID" },
-    { type: "transfer", table: "Account", primary_key: "AccountID" },
-    { type: "withdraw", table: "ATM", primary_key: "ATMID" }
+    { type: "TOPUP", table: "TopUp", primary_key: "TopUpID" },
+    { type: "BILL", table: "Bill", primary_key: "BillID" },
+    { type: "TRANSFER", table: "Account", primary_key: "AccountID" },
+    { type: "WITHDRAW", table: "ATM", primary_key: "ATMID" }
 ]
 
 const get_statement_by_account = async (req, res) => {
     try {
         const { accountID } = req.body
-        console.log(req.body);
 
         const statement = await get_statement_by_accountID(accountID);
 
@@ -29,11 +28,11 @@ const get_statement_by_account = async (req, res) => {
             };
         })
 
+
         const statementWithSource = await get_all_source_details(enrichedStatement, tableDetail);
 
         // Process the result to remove the 'Source' and 'SourceTable' properties
         const formated_statement = statementWithSource.map(transaction => removeProperties(transaction, 'Source', 'SourceTable'));
-        console.log(formated_statement);
 
         res.status(200).json({ status: 200, message: "get all statement transaction success", statement: formated_statement });
     } catch (error) {
