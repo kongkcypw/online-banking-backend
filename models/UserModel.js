@@ -40,6 +40,16 @@ const update_user_set_pin = async (email, pin) => {
     }
 }
 
+const update_user_balance = async (balance, accountID) => {
+    try {
+        const query = `UPDATE User SET Balance = ? WHERE AccountID = ?`;
+        const [result] = await promisePool.query(query, [balance, accountID])
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     check_user_exist,
     insert_new_user,
