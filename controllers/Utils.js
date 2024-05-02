@@ -21,8 +21,22 @@ const removeProperties = (obj, ...props) => {
     return newObj;
 }
 
+async function calculateNewBalance(accountBalance, transactionFlow, transactionAmount){
+    let newBalance;
+    if(accountBalance !== null){
+        if(transactionFlow === "IN"){
+            newBalance = accountBalance + transactionAmount
+        }
+        else if(transactionFlow === "OUT"){
+            newBalance = accountBalance - transactionAmount
+        }
+        return newBalance
+    }
+    return null
+}
 
 module.exports = {
     getTimestamp,
-    removeProperties
+    removeProperties,
+    calculateNewBalance
 }

@@ -28,7 +28,6 @@ const get_all_source_details = async (transactions, tableDetail) => {
         // Fetch details for each table
         const details = {};
         for (const [table, sourceIds] of Object.entries(tableGroups)) {
-            console.log("TEST");
             const query = `SELECT * FROM ${table} WHERE ${tableDetail.find(d => d.table === table).primary_key} IN (?)`;
             const [rows] = await promisePool.query(query, [sourceIds]);
             details[table] = rows;

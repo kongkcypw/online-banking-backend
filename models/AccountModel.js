@@ -42,9 +42,40 @@ const get_next_accountID = async (length) => {
     }
 }
 
+const get_account_balance = async (accountID) => {
+    try {
+        const query = `SELECT Balance FROM Account WHERE AccountID = ?`;
+        const [rows, fields] = await promisePool.query(query, [accountID]);
+        if(rows[0]){
+            return rows[0].Balance;
+        }
+        else{
+            return null;
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+const update_account_balance = async (balance, accountID) => {
+    try {
+        if(accountID !== null && balance !== null){
+            const query = `UPDATE Account SET Balance = ? WHERE AccountID = ?`;
+            const [result] = await promisePool.query(query, [balance, accountID])
+            return result;
+        }
+        else{
+            return null;
+        }
+    } catch (error) {
+        throw error;
+    }
+}
 
 module.exports = {
     check_accountID_exist,
     insert_new_account,
-    get_next_accountID
+    get_next_accountID,
+    get_account_balance,
+    update_account_balance
 }

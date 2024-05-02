@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 const { check_user_exist,
     insert_new_user,
     select_user_by_email,
-    update_user_set_pin
+    update_user_set_pin,
+    get_next_userID
 } = require("../models/UserModel");
 
 
@@ -28,7 +29,7 @@ const register_password = async (req, res) => {
         encryptedPassword = await bcrypt.hash(password, 10)
 
         // generate UserID
-        const userID = await generateUserId(16);
+        const userID = await get_next_userID(4);
 
         // Insert new user in database
         const insert_result = await insert_new_user(userID, email.toLowerCase(), encryptedPassword, firstname, lastname, phoneNumber)
@@ -90,18 +91,6 @@ const register_pin = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
-}
-
-async function generateUserId(length) {
-    // Define the characters that can be used in the ID
-    const characters = '0123456789abcdefghijklmnopqrstuvwxyz';
-    let result = 'u'; // Start with 'u'
-    // Generate random characters from the defined character set
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        result += characters[randomIndex];
-    }
-    return result;
 }
 
 module.exports = {

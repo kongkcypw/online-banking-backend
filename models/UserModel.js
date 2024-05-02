@@ -40,12 +40,24 @@ const update_user_set_pin = async (email, pin) => {
     }
 }
 
-const update_user_balance = async (balance, accountID) => {
+const get_next_userID = async (length) => {
     try {
-        const query = `UPDATE User SET Balance = ? WHERE AccountID = ?`;
-        const [result] = await promisePool.query(query, [balance, accountID])
-        return result;
+        const query = `SELECT UserID FROM User
+        WHERE UserID LIKE 'U%'
+        ORDER BY UserID DESC
+        LIMIT 1;`;
+        const rows = await promisePool.query(query);  // Execute query without explicit array for parameters
+        let newIdNumber;
+        if (rows[0].length > 0) {
+            const lastId = rows[0][0].UserID.replace(/\D/g, ''); // Correctly access the first element and get the numeric part
+            newIdNumber = parseInt(lastId, 10) + 1; // increment the numeric part
+        } else {
+            newIdNumber = 1; // If no existing entries, start at 1
+        }
+
+        return `U${newIdNumber.toString().padStart(length, '0')}`;
     } catch (error) {
+        console.error(error);
         throw error;
     }
 }
@@ -54,5 +66,6 @@ module.exports = {
     check_user_exist,
     insert_new_user,
     select_user_by_email,
-    update_user_set_pin
+    update_user_set_pin,
+    get_next_userID
 }
