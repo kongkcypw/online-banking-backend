@@ -23,6 +23,8 @@ const topup = async (req, res) => {
         const insert_first_transaction_result = await insert_new_transaction(transactionID_first, referenceID, destinationID, transactionType, transactionFlow_first, transactionFee, description);
         const insert_second_transaction_result = await insert_new_transaction(transactionID_second, referenceID, sourceID, transactionType, transactionFlow_second, transactionFee, description);
         
+        // Update balance
+        
 
         res.status(200).json({ status: 200, message: "Topup transaction sucess" });
     } catch (error) {

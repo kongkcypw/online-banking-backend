@@ -42,7 +42,6 @@ const insert_new_transaction = async (transactionID, referenceID, destinationID,
 }
 
 module.exports = {
-    get_next_transactionID,
     check_transactionID_unique,
     insert_new_transaction,
 }
