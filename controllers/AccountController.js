@@ -1,35 +1,16 @@
 const { check_accountID_exist, insert_new_account, get_next_accountID } = require("../models/AccountModel");
-const { get_all_branch } = require("../models/BranchModel");
+const { get_account_info_by_accountID } = require("../models/complex/UserAccountModel");
 
-const creditCardLimit_init = 20000;
-
-const create_new_account = async (req, res) => {
-    try {
-        const { userID, latitude, longitude, balance } = req.body;
-        console.log(req.body);
-
-        const all_branch = await get_all_branch();
-
-        const userLocation = {
-            latitude: latitude,
-            longitude: longitude
+const get_account_info = async (req, res) => {
+    try{
+        const { userID } = req.body;
+        const accountInfo = await get_account_info_by_accountID(userID);
+        if(accountInfo.length > 0){
+            res.status(200).json({ status: 200, message: "get account info success", accountInfo: accountInfo[0] });
         }
-        const closestBranchID = await findClosestBranch(userLocation, all_branch);
-        console.log(closestBranchID);
-
-        const branchNumber = await extractNumber(closestBranchID);
-        console.log(branchNumber);
-
-        const accountNumber = await generateBankAccountNumber(branchNumber);
-        console.log(accountNumber);
-
-        const accountID = await get_next_accountID(4);
-        console.log(accountID);
-
-        const result = await insert_new_account(accountID, userID, accountNumber, closestBranchID, balance, creditCardLimit_init);
-        console.log(result);
-
-        res.status(200).json({ status: 200, message: "create new account success" });
+        else{
+            res.status(201).json({ status: 201, message: "failed, no account found" });
+        }
     } catch (error) {
         console.log(error);
     }
@@ -110,5 +91,8 @@ async function extractNumber(inputString) {
 }
 
 module.exports = {
-    create_new_account
+    get_account_info,
+    generateBankAccountNumber,
+    findClosestBranch,
+    extractNumber
 }

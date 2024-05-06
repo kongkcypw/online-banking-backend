@@ -12,7 +12,7 @@ const check_accountID_exist = async (accountID) => {
 
 const insert_new_account = async (accountID, userID, accountNumber, branchID, balance, creditcardLimit) => {
     try {
-        const query = `INSERT INTO Account (AccountID, UserID, AccountNumber, BranchID, Balance, CreditcardLimit) VALUES (?, ?, ?, ?, ?, ?)`;
+        const query = `INSERT INTO Account (AccountID, UserID, AccountNumber, BranchID, Balance, CreditcardLimit, DateOpen) VALUES (?, ?, ?, ?, ?, ?, NOW())`;
         const [result] = await promisePool.execute(query, [accountID, userID, accountNumber, branchID, balance, creditcardLimit]);
         return result;
     } catch (error) {
@@ -77,5 +77,5 @@ module.exports = {
     insert_new_account,
     get_next_accountID,
     get_account_balance,
-    update_account_balance
+    update_account_balance,
 }
