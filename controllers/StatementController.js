@@ -2,7 +2,7 @@ const { get_statement_by_accountID, get_source_detail, get_all_source_details } 
 const { removeProperties } = require("./Utils");
 
 const tableDetail = [
-    { type: "TOPUP", table: "TopUp", primary_key: "TopUpID" },
+    { type: "TOPUP", table: "Topup", primary_key: "TopupID" },
     { type: "BILL", table: "Bill", primary_key: "BillID" },
     { type: "TRANSFER", table: "Account", primary_key: "AccountID" },
     { type: "WITHDRAW", table: "ATM", primary_key: "ATMID" }
