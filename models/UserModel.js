@@ -10,10 +10,10 @@ const check_user_exist = async (email) => {
     }
 }
 
-const insert_new_user = async (userID, email, password, firstName, lastName, phoneNumber) => {
+const insert_new_user = async (userID, email, password, firstName, lastName, idCard, phoneNumber, address, birth) => {
     try {
-        const query = `INSERT INTO User (UserID, Email, Password, FirstName, LastName, PhoneNumber) VALUES (?, ?, ?, ?, ?, ?)`;
-        const [result] = await promisePool.execute(query, [userID, email, password, firstName, lastName, phoneNumber]);
+        const query = `INSERT INTO User (UserID, Email, Password, FirstName, LastName, IdCard, PhoneNumber, Address, Birth) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const [result] = await promisePool.execute(query, [userID, email, password, firstName, lastName, idCard, phoneNumber, address, birth]);
         return result;
     } catch (error) {
         throw error;
