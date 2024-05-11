@@ -10,6 +10,17 @@ const get_all_topup = async () => {
     }
 }
 
+const get_topup_by_topupID = async (topupID) => {
+    try {
+        const query = `SELECT * FROM Topup WHERE TopupID = ?`;
+        const [result] = await promisePool.execute(query, [topupID]);
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
-    get_all_topup
+    get_all_topup,
+    get_topup_by_topupID
 }

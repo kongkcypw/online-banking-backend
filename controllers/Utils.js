@@ -25,10 +25,10 @@ async function calculateNewBalance(accountBalance, transactionFlow, transactionA
     let newBalance;
     if(accountBalance !== null){
         if(transactionFlow === "IN"){
-            newBalance = accountBalance + transactionAmount
+            newBalance = parseFloat(accountBalance) + parseFloat(transactionAmount)
         }
         else if(transactionFlow === "OUT"){
-            newBalance = accountBalance - transactionAmount
+            newBalance = parseFloat(accountBalance) - parseFloat(transactionAmount)
         }
         return newBalance
     }
