@@ -137,7 +137,7 @@ const register_confirm = async (req, res) => {
         console.log(insert_account_result);
 
         // return new user
-        return res.status(200).json({ status: 200, message: "Register Success", email: user.Email, userID: user.UserID });
+        return res.status(200).json({ status: 200, message: "Register Success", email: user.Email, userID: user.UserID, permissionLevel: 0 });
     } catch (error) {
         console.log(error)
         return res.status(202).json({ status: 202, message: "Register Fail", errorMessage: error });
