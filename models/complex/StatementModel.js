@@ -2,9 +2,9 @@ const { promisePool } = require("../../config/mysql");
 
 const get_statement_by_accountID = async (destinationID) => {
     try {
-        const query = `SELECT t1.TransactionFlow, t1.TransactionType, r.Amount, t1.TransactionFee, t2.DestinationID AS Source, r.DateTime FROM Reference r `
-        + `JOIN Transaction t1 ON r.ReferenceID = t1.ReferenceID AND t1.DestinationID = ? `
-        + `JOIN Transaction t2 ON r.ReferenceID = t2.ReferenceID AND t1.TransactionID != t2.TransactionID `;
+        const query = `SELECT t1.TransactionFlow, t1.TransactionType, r.Amount, t1.TransactionFee, t2.DestinationID AS Source, CONVERT_TZ(r.DateTime, 'UTC', 'Asia/Bangkok') AS DateTime FROM Reference r `
+            + `JOIN Transaction t1 ON r.ReferenceID = t1.ReferenceID AND t1.DestinationID = ? `
+            + `JOIN Transaction t2 ON r.ReferenceID = t2.ReferenceID AND t1.TransactionID != t2.TransactionID `;
         // + `JOIN TopUp tu ON tu.TopUpID = t2.DestinationID`
         const [rows, fields] = await promisePool.query(query, [destinationID]);
         return rows;
@@ -25,12 +25,28 @@ const get_all_source_details = async (transactions, tableDetail) => {
             tableGroups[Name].push(transaction.Source);
         });
 
+
         // Fetch details for each table
         const details = {};
         for (const [table, sourceIds] of Object.entries(tableGroups)) {
-            const query = `SELECT * FROM ${table} WHERE ${tableDetail.find(d => d.table === table).primary_key} IN (?)`;
-            const [rows] = await promisePool.query(query, [sourceIds]);
-            details[table] = rows;
+            if (table === "Account") {
+                const query = `SELECT a.AccountID, a.AccountNumber, u.FirstName, u.LastName FROM ${table} a  `
+                + `JOIN User u ON a.UserID = u.UserID`
+                + ` WHERE ${tableDetail.find(d => d.table === table).primary_key} IN (?) `;
+                const [rows] = await promisePool.query(query, [sourceIds]);
+                console.log(rows);
+                details[table] = rows;
+            }
+            else{
+                const query = `SELECT * FROM ${table} WHERE ${tableDetail.find(d => d.table === table).primary_key} IN (?)`;
+                const [rows] = await promisePool.query(query, [sourceIds]);
+                console.log(rows);
+                details[table] = rows;
+            }
+            // const query = `SELECT * FROM ${table} WHERE ${tableDetail.find(d => d.table === table).primary_key} IN (?)`;
+            // const [rows] = await promisePool.query(query, [sourceIds]);
+            // console.log(rows);
+            // details[table] = rows;
         }
 
         // Map the details back to the transactions
