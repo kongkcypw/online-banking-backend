@@ -21,7 +21,7 @@ const login_password = async (req, res) => {
         const user = await select_user_by_email(email);
 
         if (user_exist && (await bcrypt.compare(password, user.Password))) {
-            return res.status(200).json({ status: 200, message: "Login Success", email: user.Email, userID: user.UserID });
+            return res.status(200).json({ status: 200, message: "Login Success", email: user.Email, userID: user.UserID, permissionLevel: 0 });
         }
 
         return res.status(202).json({ status: 202, message: "Invalid Password" });
