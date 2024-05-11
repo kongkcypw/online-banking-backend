@@ -1,5 +1,5 @@
 const { check_accountID_exist, insert_new_account, get_next_accountID } = require("../models/AccountModel");
-const { get_account_info_by_accountID } = require("../models/complex/UserAccountModel");
+const { get_account_info_by_accountID, get_account_name_by_accountNumber } = require("../models/complex/UserAccountModel");
 
 const get_account_info = async (req, res) => {
     try{
@@ -7,6 +7,21 @@ const get_account_info = async (req, res) => {
         const accountInfo = await get_account_info_by_accountID(userID);
         if(accountInfo.length > 0){
             res.status(200).json({ status: 200, message: "get account info success", accountInfo: accountInfo[0] });
+        }
+        else{
+            res.status(201).json({ status: 201, message: "failed, no account found" });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const get_account_name = async (req, res) => {
+    try{
+        const { accountNumber, bankID } = req.body;
+        const accountInfo = await get_account_name_by_accountNumber(accountNumber, bankID);
+        if(accountInfo.length > 0){
+            res.status(200).json({ status: 200, message: "get account name success", accountInfo: accountInfo[0] });
         }
         else{
             res.status(201).json({ status: 201, message: "failed, no account found" });
@@ -92,6 +107,7 @@ async function extractNumber(inputString) {
 
 module.exports = {
     get_account_info,
+    get_account_name,
     generateBankAccountNumber,
     findClosestBranch,
     extractNumber

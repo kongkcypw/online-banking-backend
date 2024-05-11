@@ -10,10 +10,10 @@ const check_accountID_exist = async (accountID) => {
     }
 }
 
-const insert_new_account = async (accountID, userID, accountNumber, branchID, balance, creditcardLimit) => {
+const insert_new_account = async (accountID, userID, bankID, branchID, accountNumber, balance, creditcardLimit) => {
     try {
-        const query = `INSERT INTO Account (AccountID, UserID, AccountNumber, BranchID, Balance, CreditcardLimit, DateOpen) VALUES (?, ?, ?, ?, ?, ?, NOW())`;
-        const [result] = await promisePool.execute(query, [accountID, userID, accountNumber, branchID, balance, creditcardLimit]);
+        const query = `INSERT INTO Account (AccountID, UserID, BankID, BranchID, AccountNumber, Balance, CreditcardLimit, DateOpen) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`;
+        const [result] = await promisePool.execute(query, [accountID, userID, bankID, branchID, accountNumber, balance, creditcardLimit]);
         return result;
     } catch (error) {
         throw error;
@@ -72,10 +72,21 @@ const update_account_balance = async (balance, accountID) => {
     }
 }
 
+const get_accountID_by_accountNumber_and_userID = async (accountNumber, userID) => {
+    try {
+        const query = `SELECT AccountID FROM Account WHERE AccountNumber = ? AND UserID = ?`;
+        const [rows, fields] = await promisePool.query(query, [accountNumber, userID]);
+        return rows[0].AccountID;
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     check_accountID_exist,
     insert_new_account,
     get_next_accountID,
     get_account_balance,
     update_account_balance,
+    get_accountID_by_accountNumber_and_userID
 }

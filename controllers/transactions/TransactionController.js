@@ -1,8 +1,9 @@
-const { get_account_balance, update_account_balance } = require("../../models/AccountModel");
+const { get_account_balance, update_account_balance, get_accountID_by_accountNumber_and_userID } = require("../../models/AccountModel");
 const { insert_new_reference_topup } = require("../../models/transaction/ReferenceModel");
 const { check_transactionID_unique, insert_new_transaction } = require("../../models/transaction/TransactionModel");
 const { getTimestamp, calculateNewBalance } = require("../Utils");
 const { generateReferenceId } = require("./ReferenceController");
+const { get_accountID_by_accountNumber } = require("../../models/complex/UserAccountModel");
 
 const TransactionFlowCase = [
     { type: "TOPUP", typeCode: "TU", first: "IN", second: "OUT"},
@@ -13,13 +14,26 @@ const TransactionFlowCase = [
 
 const insert = async (req, res) => {
     try {
-        const { transactionType, sourceID, destinationID, amount, description, transactionFee } = req.body;
+        const { transactionType, userID, accountNumber, destID, amount, description, transactionFee } = req.body;
         console.log(req.body);
+
+        // Use userID and accountNumber to get accountID(sourceID)
+        const sourceID = await get_accountID_by_accountNumber_and_userID(accountNumber, userID);
+        console.log(sourceID);
 
         // Match transaction flow for both sides
         const flowCase = TransactionFlowCase.find(transaction => transaction.type === transactionType);
         const transactionFlow_first = flowCase.first;
         const transactionFlow_second = flowCase.second;
+
+        // Transfer: Use accountNumber to get accountID(destinationID)
+        let destinationID
+        if(flowCase.type === "TRANSFER"){
+            destinationID = await get_accountID_by_accountNumber(destID);
+        }else{
+            destinationID = destID;
+        }
+        
 
         // Generate unique ID
         const transactionID_first = await generateTransactionId(transactionType)

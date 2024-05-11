@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const topupController = require('../controllers/transactions/TransactionController');
+const controller = require('../controllers/transactions/TransactionController');
 
-router.post('/insert', topupController.insert);
+router.post('/insert', controller.insert);
 
 module.exports = router;

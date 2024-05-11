@@ -114,7 +114,7 @@ const register_confirm = async (req, res) => {
         // Table User
         const { email, password, firstname, lastname, idCard, phoneNumber, address, birth } = req.body.user;
         //  Table Account
-        const { branchNumber, branchID, balance } = req.body.account;
+        const { branchNumber, branchID, balance, bankID } = req.body.account;
 
         // -------------------------------- User
         // Encrypt user password
@@ -133,7 +133,7 @@ const register_confirm = async (req, res) => {
         const accountNumber = await generateBankAccountNumber(branchNumber);
         console.log(accountID);
         // Insert new account in database
-        const insert_account_result = await insert_new_account(accountID, userID, accountNumber, branchID, parseFloat(balance), creditCardLimit_init);
+        const insert_account_result = await insert_new_account(accountID, userID, bankID, accountNumber, branchID, parseFloat(balance), creditCardLimit_init);
         console.log(insert_account_result);
 
         // return new user

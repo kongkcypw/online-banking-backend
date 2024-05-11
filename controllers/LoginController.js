@@ -80,6 +80,32 @@ const login_pin = async (req, res) => {
     }
 }
 
+const check_role = async (req, res) => {
+    try {
+        // Get user input
+        const { email } = req.body;
+
+        // Validate user input
+        if (!(email)) {
+            return res.status(201).json({ status: 201, message: "Please login" });
+        }
+
+        // Validate if user exist in our database
+        const check_exist = await check_user_exist(email);
+        const user_exist = check_exist.length > 0;
+
+        // Get user data
+        const user = await select_user_by_email(email);
+
+        if (user_exist && (await bcrypt.compare(password, user.Password))) {
+            return res.status(200).json({ status: 200, message: "Login Success", email: user.Email, userID: user.UserID });
+        };
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     login_password,
     login_pin
