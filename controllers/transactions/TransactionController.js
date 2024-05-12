@@ -67,8 +67,9 @@ const insert = async (req, res) => {
         console.log(updateBalance_first)
         console.log(updateBalance_second);
 
-        res.status(200).json({ status: 200, message: "Topup transaction sucess" });
+        res.status(200).json({ status: 200, message: "Transaction sucess" });
     } catch (error) {
+        res.status(400).json({ status: 400, message: error})
         console.log(error);
     }
 }

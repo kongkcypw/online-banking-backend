@@ -2,9 +2,10 @@ const { promisePool } = require("../../config/mysql");
 
 const get_account_info_by_accountID = async (userID) => {
     try {
-        const query = `SELECT a.UserID, a.AccountID, a.AccountNumber, u.FirstName, u.LastName, a.Balance, a.CreditcardLimit  FROM Account a `
+        const query = `SELECT a.UserID, a.AccountID, a.AccountNumber, u.FirstName, u.LastName, u.PhoneNumber, a.Balance, a.CreditcardLimit  FROM Account a `
         + `JOIN User u ON a.UserID = u.UserID AND a.UserID = ?`
         const [rows, fields] = await promisePool.query(query, [userID]);
+        console.log(rows);
         return rows;
     } catch (error) {
         throw error;
