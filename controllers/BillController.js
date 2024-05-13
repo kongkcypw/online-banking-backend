@@ -1,4 +1,4 @@
-const { get_bill_join } = require("../models/complex/PaymentRequire");
+const { get_bill_join } = require("../models/join/PaymentRequire");
 const { get_all_bill, get_bill_by_billID } = require("../models/ฺBillModel");
 
 const get_all = async (req, res) => {

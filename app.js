@@ -11,6 +11,7 @@ const statementRoute = require('./routes/Statement')
 const billRoute = require('./routes/Bill')
 const topupRoute = require('./routes/Topup')
 const bankRoute = require('./routes/Bank')
+const atmRoute = require('./routes/Atm')
 
 const app = express();
 
@@ -39,5 +40,6 @@ app.use("/statement", statementRoute)
 app.use("/topup", topupRoute)
 app.use("/bill", billRoute)
 app.use("/bank", bankRoute)
+app.use("/atm", atmRoute)
 
 module.exports = app;
