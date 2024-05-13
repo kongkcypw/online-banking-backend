@@ -1,5 +1,5 @@
 const { check_accountID_exist, insert_new_account, get_next_accountID } = require("../models/AccountModel");
-const { get_account_info_by_accountID, get_account_name_by_accountNumber } = require("../models/complex/UserAccountModel");
+const { get_account_info_by_accountID, get_account_name_by_accountNumber } = require("../models/join/UserAccountModel");
 
 const get_account_info = async (req, res) => {
     try{

@@ -1,5 +1,5 @@
 const { get_all_topup, get_topup_by_topupID } = require("../models/TopupModel");
-const { get_topup_join } = require("../models/complex/PaymentRequire");
+const { get_topup_join } = require("../models/join/PaymentRequire");
 
 const get_all = async (req, res) => {
     try{

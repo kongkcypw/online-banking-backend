@@ -1,4 +1,4 @@
-const { get_statement_by_accountID, get_source_detail, get_all_source_details } = require("../models/complex/StatementModel");
+const { get_statement_by_accountID, get_source_detail, get_all_source_details } = require("../models/join/StatementModel");
 const { removeProperties } = require("./Utils");
 
 const tableDetail = [
