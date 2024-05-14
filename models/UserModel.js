@@ -1,9 +1,9 @@
-const { promisePool } = require("../config/mysql");
+const { db } = require("../config/mysql");
 
 const check_user_exist = async (email) => {
     try {
         const query = `SELECT * FROM User WHERE Email = ?`;
-        const [rows, fields] = await promisePool.query(query, [email]);
+        const [rows, fields] = await db.query(query, [email]);
         return rows;
     } catch (error) {
         throw error;
@@ -13,7 +13,7 @@ const check_user_exist = async (email) => {
 const insert_new_user = async (userID, email, password, firstName, lastName, idCard, phoneNumber, address, birth) => {
     try {
         const query = `INSERT INTO User (UserID, Email, Password, FirstName, LastName, IdCard, PhoneNumber, Address, Birth) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const [result] = await promisePool.execute(query, [userID, email, password, firstName, lastName, idCard, phoneNumber, address, birth]);
+        const [result] = await db.execute(query, [userID, email, password, firstName, lastName, idCard, phoneNumber, address, birth]);
         return result;
     } catch (error) {
         throw error;
@@ -23,7 +23,7 @@ const insert_new_user = async (userID, email, password, firstName, lastName, idC
 const select_user_by_email = async (email) => {
     try {
         const query = `SELECT * FROM User WHERE Email = ?`;
-        const [rows, fields] = await promisePool.query(query, [email])
+        const [rows, fields] = await db.query(query, [email])
         return rows[0];
     } catch (error) {
         throw error;
@@ -33,7 +33,7 @@ const select_user_by_email = async (email) => {
 const update_user_set_pin = async (email, pin) => {
     try {
         const query = `UPDATE User SET Pin = ? WHERE Email = ?`;
-        const [result] = await promisePool.query(query, [pin, email])
+        const [result] = await db.query(query, [pin, email])
         return result;
     } catch (error) {
         throw error;
@@ -46,7 +46,7 @@ const get_next_userID = async (length) => {
         WHERE UserID LIKE 'U%'
         ORDER BY UserID DESC
         LIMIT 1;`;
-        const rows = await promisePool.query(query);  // Execute query without explicit array for parameters
+        const rows = await db.query(query);  // Execute query without explicit array for parameters
         let newIdNumber;
         if (rows[0].length > 0) {
             const lastId = rows[0][0].UserID.replace(/\D/g, ''); // Correctly access the first element and get the numeric part

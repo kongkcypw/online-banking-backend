@@ -1,9 +1,9 @@
-const { promisePool } = require("../../config/mysql");
+const { db } = require("../../config/mysql");
 
 const check_referenceID_unique = async (referenceID) => {
     try {
         const query = `SELECT * FROM Reference WHERE ReferenceID = ?`;
-        const [rows, fields] = await promisePool.query(query, [referenceID]);
+        const [rows, fields] = await db.query(query, [referenceID]);
         return rows;
     } catch (error) {
         throw error;
@@ -13,7 +13,7 @@ const check_referenceID_unique = async (referenceID) => {
 const insert_new_reference_topup = async (referenceID, amount) => {
     try {
         const query = `INSERT INTO Reference (ReferenceID, Amount, DateTime) VALUES (?, ?, NOW())`;
-        const [result] = await promisePool.execute(query, [referenceID, amount]);
+        const [result] = await db.execute(query, [referenceID, amount]);
         return result;
     } catch (error) {
         throw error;

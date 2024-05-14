@@ -20,7 +20,6 @@ const insert = async (req, res) => {
 
         // Use userID and accountNumber to get accountID(sourceID)
         const sourceID = await get_accountID_by_accountNumber_and_userID(accountNumber, userID);
-        console.log(sourceID);
 
         // Match transaction flow for both sides
         const flowCase = TransactionFlowCase.find(transaction => transaction.type === transactionType);

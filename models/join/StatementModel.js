@@ -1,4 +1,4 @@
-const { promisePool } = require("../../config/mysql");
+const { db } = require("../../config/mysql");
 
 const get_statement_by_accountID = async (destinationID) => {
     try {
@@ -6,7 +6,7 @@ const get_statement_by_accountID = async (destinationID) => {
             + `JOIN Transaction t1 ON r.ReferenceID = t1.ReferenceID AND t1.DestinationID = ? `
             + `JOIN Transaction t2 ON r.ReferenceID = t2.ReferenceID AND t1.TransactionID != t2.TransactionID `;
         // + `JOIN TopUp tu ON tu.TopUpID = t2.DestinationID`
-        const [rows, fields] = await promisePool.query(query, [destinationID]);
+        const [rows, fields] = await db.query(query, [destinationID]);
         return rows;
     } catch (error) {
         throw error;
@@ -33,18 +33,18 @@ const get_all_source_details = async (transactions, tableDetail) => {
                 const query = `SELECT a.AccountID, a.AccountNumber, u.FirstName, u.LastName FROM ${table} a  `
                     + `JOIN User u ON a.UserID = u.UserID`
                     + ` WHERE ${tableDetail.find(d => d.table === table).primary_key} IN (?) `;
-                const [rows] = await promisePool.query(query, [sourceIds]);
+                const [rows] = await db.query(query, [sourceIds]);
                 console.log(rows);
                 details[table] = rows;
             }
             else {
                 const query = `SELECT * FROM ${table} WHERE ${tableDetail.find(d => d.table === table).primary_key} IN (?)`;
-                const [rows] = await promisePool.query(query, [sourceIds]);
+                const [rows] = await db.query(query, [sourceIds]);
                 console.log(rows);
                 details[table] = rows;
             }
             // const query = `SELECT * FROM ${table} WHERE ${tableDetail.find(d => d.table === table).primary_key} IN (?)`;
-            // const [rows] = await promisePool.query(query, [sourceIds]);
+            // const [rows] = await db.query(query, [sourceIds]);
             // console.log(rows);
             // details[table] = rows;
         }
@@ -85,7 +85,7 @@ const get_summary_statement_by_accountID = async (destinationID) => {
         ORDER BY 
             TransactionYear DESC, TransactionMonth DESC, t1.TransactionFlow;`;
         // + `JOIN TopUp tu ON tu.TopUpID = t2.DestinationID`
-        const [rows, fields] = await promisePool.query(query, [destinationID]);
+        const [rows, fields] = await db.query(query, [destinationID]);
         return rows;
     } catch (error) {
         throw error;
@@ -115,7 +115,7 @@ const get_summary_year_statement_by_accountID = async (destinationID) => {
         TransactionYear DESC, TransactionMonth DESC, t1.TransactionFlow;
     `;
         // + `JOIN TopUp tu ON tu.TopUpID = t2.DestinationID`
-        const [rows, fields] = await promisePool.query(query, [destinationID]);
+        const [rows, fields] = await db.query(query, [destinationID]);
         return rows;
     } catch (error) {
         throw error;
