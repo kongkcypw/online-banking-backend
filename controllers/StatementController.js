@@ -1,4 +1,4 @@
-const { get_statement_by_accountID, get_source_detail, get_all_source_details } = require("../models/join/StatementModel");
+const { get_statement_by_accountID, get_source_detail, get_all_source_details, get_summary_statement_by_accountID, get_summary_year_statement_by_accountID } = require("../models/join/StatementModel");
 const { removeProperties } = require("./Utils");
 
 const tableDetail = [
@@ -40,6 +40,19 @@ const get_statement_by_account = async (req, res) => {
     }
 }
 
+const get_summary_statement = async (req, res) => {
+    try {
+        const { accountID } = req.body
+        const summary = await get_summary_statement_by_accountID(accountID);
+        const year_summary = await get_summary_year_statement_by_accountID(accountID)
+        console.log(year_summary);
+        res.status(200).json({ status: 200, message: "get all statement transaction success", months: summary, year: year_summary });
+    } catch (error) {
+        res.status(400).json({ status: 400, message: "get all statement transaction success" });
+    }
+}
+
 module.exports = {
-    get_statement_by_account
+    get_statement_by_account,
+    get_summary_statement
 }
