@@ -13,7 +13,7 @@ const sql_connection_config = {
 const pool = mysql.createPool(sql_connection_config);
 
 // For pool to use promises
-const promisePool = pool.promise();
+const db = pool.promise();
 
 // Export for controller
-module.exports = { promisePool };
+module.exports = { db };

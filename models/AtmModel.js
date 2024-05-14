@@ -1,9 +1,9 @@
-const { promisePool } = require("../config/mysql");
+const { db } = require("../config/mysql");
 
 const get_atm_balance_with_atmid = async (atmID) => {
     try {
         const query = `SELECT Balance FROM ATM WHERE ATMID = ?`;
-        const [result] = await promisePool.execute(query, [atmID]);
+        const [result] = await db.execute(query, [atmID]);
         return result[0].Balance;
     } catch (error) {
         throw error;
@@ -13,7 +13,7 @@ const get_atm_balance_with_atmid = async (atmID) => {
 const update_atm_balance_with_atmid = async (balance, atmID) => {
     try {
         const query = `UPDATE ATM SET Balance = ? WHERE ATMID = ?`;
-        const [result] = await promisePool.execute(query, [balance, atmID]);
+        const [result] = await db.execute(query, [balance, atmID]);
         return result;
     } catch (error) {
         throw error;

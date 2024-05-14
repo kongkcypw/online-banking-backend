@@ -1,9 +1,9 @@
-const { promisePool } = require("../config/mysql");
+const { db } = require("../config/mysql");
 
 const get_all_bill = async () => {
     try {
         const query = `SELECT * FROM Bill`;
-        const [result] = await promisePool.execute(query);
+        const [result] = await db.execute(query);
         return result;
     } catch (error) {
         throw error;
@@ -13,7 +13,7 @@ const get_all_bill = async () => {
 const get_bill_by_billID = async (billID) => {
     try {
         const query = `SELECT * FROM Bill WHERE BillID = ?`;
-        const [result] = await promisePool.execute(query, [billID]);
+        const [result] = await db.execute(query, [billID]);
         return result;
     } catch (error) {
         throw error;
