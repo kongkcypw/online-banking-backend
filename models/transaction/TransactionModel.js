@@ -1,4 +1,4 @@
-const { promisePool } = require("../../config/mysql");
+const { db } = require("../../config/mysql");
 
 const get_next_transactionID = async (length, transactionType) => {
     try {
@@ -7,7 +7,7 @@ const get_next_transactionID = async (length, transactionType) => {
         ORDER BY TransactionID DESC
         LIMIT 1;`;
         const values = [`${transactionType}-%`];
-        const rows = await promisePool.query(query, [values]);
+        const rows = await db.query(query, [values]);
         let newIdNumber;
         if (rows[0].length > 0) {
           const lastId = rows[0].TransactionID.split('-')[1]; // split to get the numeric part
@@ -24,7 +24,7 @@ const get_next_transactionID = async (length, transactionType) => {
 const check_transactionID_unique = async (transactionID) => {
   try {
     const query = `SELECT * FROM Transaction WHERE TransactionID = ?`;
-    const [rows, fields] = await promisePool.query(query, [transactionID]);
+    const [rows, fields] = await db.query(query, [transactionID]);
     return rows;
   } catch (error) {
     throw error;
@@ -34,7 +34,7 @@ const check_transactionID_unique = async (transactionID) => {
 const insert_new_transaction = async (transactionID, referenceID, destinationID, transactionType, transactionFlow, transactionFee, description) => {
   try {
       const query = `INSERT INTO Transaction (TransactionID, ReferenceID, DestinationID, TransactionType, TransactionFlow, TransactionFee, Description) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      const [result] = await promisePool.execute(query, [transactionID, referenceID, destinationID, transactionType, transactionFlow, transactionFee, description]);
+      const [result] = await db.execute(query, [transactionID, referenceID, destinationID, transactionType, transactionFlow, transactionFee, description]);
       return result;
   } catch (error) {
       throw error;
@@ -42,7 +42,6 @@ const insert_new_transaction = async (transactionID, referenceID, destinationID,
 }
 
 module.exports = {
-    get_next_transactionID,
     check_transactionID_unique,
     insert_new_transaction,
 }

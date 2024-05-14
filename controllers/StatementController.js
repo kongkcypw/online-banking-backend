@@ -1,17 +1,16 @@
-const { get_statement_by_accountID, get_source_detail, get_all_source_details } = require("../models/complex/StatementModel");
+const { get_statement_by_accountID, get_source_detail, get_all_source_details, get_summary_statement_by_accountID, get_summary_year_statement_by_accountID } = require("../models/join/StatementModel");
 const { removeProperties } = require("./Utils");
 
 const tableDetail = [
-    { type: `topup`, table: `TopUp`, primary_key: `TopUpID` },
-    { type: "bill", table: "Bill", primary_key: "BillID" },
-    { type: "transfer", table: "Account", primary_key: "AccountID" },
-    { type: "withdraw", table: "ATM", primary_key: "ATMID" }
+    { type: "TOPUP", table: "Topup", primary_key: "TopupID" },
+    { type: "BILL", table: "Bill", primary_key: "BillID" },
+    { type: "TRANSFER", table: "Account", primary_key: "AccountID" },
+    { type: "WITHDRAW", table: "ATM", primary_key: "ATMID" }
 ]
 
 const get_statement_by_account = async (req, res) => {
     try {
         const { accountID } = req.body
-        console.log(req.body);
 
         const statement = await get_statement_by_accountID(accountID);
 
@@ -29,11 +28,11 @@ const get_statement_by_account = async (req, res) => {
             };
         })
 
+
         const statementWithSource = await get_all_source_details(enrichedStatement, tableDetail);
 
         // Process the result to remove the 'Source' and 'SourceTable' properties
         const formated_statement = statementWithSource.map(transaction => removeProperties(transaction, 'Source', 'SourceTable'));
-        console.log(formated_statement);
 
         res.status(200).json({ status: 200, message: "get all statement transaction success", statement: formated_statement });
     } catch (error) {
@@ -41,6 +40,19 @@ const get_statement_by_account = async (req, res) => {
     }
 }
 
+const get_summary_statement = async (req, res) => {
+    try {
+        const { accountID } = req.body
+        const summary = await get_summary_statement_by_accountID(accountID);
+        const year_summary = await get_summary_year_statement_by_accountID(accountID)
+        console.log(year_summary);
+        res.status(200).json({ status: 200, message: "get all statement transaction success", months: summary, year: year_summary });
+    } catch (error) {
+        res.status(400).json({ status: 400, message: "get all statement transaction success" });
+    }
+}
+
 module.exports = {
-    get_statement_by_account
+    get_statement_by_account,
+    get_summary_statement
 }

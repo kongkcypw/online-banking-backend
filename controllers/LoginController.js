@@ -20,9 +20,8 @@ const login_password = async (req, res) => {
         // Get user data
         const user = await select_user_by_email(email);
 
-
         if (user_exist && (await bcrypt.compare(password, user.Password))) {
-            return res.status(200).json({ status: 200, message: "Login Success", email: user.Email });
+            return res.status(200).json({ status: 200, message: "Login Success", email: user.Email, userID: user.UserID, permissionLevel: 0 });
         }
 
         return res.status(202).json({ status: 202, message: "Invalid Password" });
@@ -75,6 +74,32 @@ const login_pin = async (req, res) => {
 
         return res.status(203).json({ status: 203, message: "Invalid Credentials" });
 
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const check_role = async (req, res) => {
+    try {
+        // Get user input
+        const { email } = req.body;
+
+        // Validate user input
+        if (!(email)) {
+            return res.status(201).json({ status: 201, message: "Please login" });
+        }
+
+        // Validate if user exist in our database
+        const check_exist = await check_user_exist(email);
+        const user_exist = check_exist.length > 0;
+
+        // Get user data
+        const user = await select_user_by_email(email);
+
+        if (user_exist && (await bcrypt.compare(password, user.Password))) {
+            return res.status(200).json({ status: 200, message: "Login Success", email: user.Email, userID: user.UserID });
+        };
 
     } catch (error) {
         console.log(error);
