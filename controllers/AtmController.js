@@ -24,5 +24,5 @@ const get_atm_balnce = async (req, res) => {
 
 module.exports = {
     get_atm_info,
-    get_atm_balnce
+    get_atm_balnce,
 }
