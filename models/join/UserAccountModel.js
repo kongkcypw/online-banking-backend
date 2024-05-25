@@ -5,7 +5,6 @@ const get_account_info_by_accountID = async (userID) => {
         const query = `SELECT a.UserID, a.AccountID, a.AccountNumber, u.FirstName, u.LastName, u.PhoneNumber, a.Balance, a.CreditcardLimit  FROM Account a `
         + `JOIN User u ON a.UserID = u.UserID AND a.UserID = ?`
         const [rows, fields] = await db.query(query, [userID]);
-        console.log(rows);
         return rows;
     } catch (error) {
         throw error;
@@ -34,8 +33,35 @@ const get_accountID_by_accountNumber = async (accountNumber) => {
     }
 }
 
+const get_user_account_list_in_branch = async (branchID) => {
+    try {
+        const query = `
+        SELECT 
+            a.AccountID,
+            a.UserID,
+            u.FirstName,
+            u.LastName,
+            u.Email,
+            u.IdCard,
+            u.PhoneNumber,
+            a.AccountNumber,
+            a.Balance,
+            a.DateOpen
+        FROM Account a 
+        JOIN 
+            User u ON a.UserID = u.UserID 
+        WHERE
+            a.BranchID = ?;`
+        const [rows, fields] = await db.query(query, [branchID]);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     get_account_info_by_accountID,
     get_account_name_by_accountNumber,
-    get_accountID_by_accountNumber
+    get_accountID_by_accountNumber,
+    get_user_account_list_in_branch,
 }

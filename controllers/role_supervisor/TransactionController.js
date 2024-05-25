@@ -4,25 +4,17 @@ const { destination_detail_topup_or_bill,
     destination_detail_transfer_in, 
     destination_detail_withdraw } = require("../../models/join/DestinationModel");
 const {
-    one_branch_InOut_transaction_current_date,
-    one_branch_count_all_transaction_current_date,
-    one_branch_transaction_detail_current_date } = require("../../models/join/TransactionModel");
+    one_branch_InOut_transaction_date_range,
+    one_branch_count_all_transaction_date_range,
+    one_branch_transaction_detail_date_range } = require("../../models/join/TransactionModel");
 
 const get_current_date = async (req, res) => {
     try {
-        const { branchID } = req.body;
-        const inOut = await one_branch_InOut_transaction_current_date(branchID);
-        const count = await one_branch_count_all_transaction_current_date(branchID);
-        const detail = await one_branch_transaction_detail_current_date(branchID);
-        console.log(inOut);
-        console.log(count);
-        console.log(detail);
-        if (inOut.length > 0 && count.length) {
-            res.status(200).json({ status: 200, message: "get transaction in branch success", flow: inOut, sum: count[0], detail: detail });
-        }
-        else {
-            res.status(201).json({ status: 201, message: "no transaction" });
-        }
+        const { branchID, startDate, endDate } = req.body;
+        const inOut = await one_branch_InOut_transaction_date_range(branchID, startDate, endDate);
+        const count = await one_branch_count_all_transaction_date_range(branchID, startDate, endDate);
+        const detail = await one_branch_transaction_detail_date_range(branchID, startDate, endDate);
+        res.status(200).json({ status: 200, message: "get transaction in branch success", flow: inOut, sum: count[0], detail: detail });
     } catch (error) {
         console.log(error);
         res.status(400).json({ status: 400, message: error });
