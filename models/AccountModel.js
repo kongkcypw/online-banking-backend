@@ -57,21 +57,19 @@ const get_account_balance = async (accountID) => {
     }
 }
 
-const update_account_balance = async (balance, accountID) => {
+const update_account_balance = async (connection, balance, accountID) => {
     try {
         if(accountID !== null && balance !== null){
             const query = `UPDATE Account SET Balance = ? WHERE AccountID = ?`;
-            const [result] = await db.query(query, [balance, accountID])
+            const [result] = await connection.execute(query, [balance, accountID]);
             return result;
-        }
-        else{
+        } else {
             return null;
         }
     } catch (error) {
         throw error;
     }
-}
-
+};
 const get_accountID_by_accountNumber_and_userID = async (accountNumber, userID) => {
     try {
         const query = `SELECT AccountID FROM Account WHERE AccountNumber = ? AND UserID = ?`;
