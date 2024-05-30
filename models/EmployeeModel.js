@@ -50,8 +50,34 @@ const get_supervisor = async () => {
     }
 }
 
+const get_employee = async () => {
+    try {
+        const query = `
+        SELECT
+            e.FirstName,
+            e.LastName,
+            e.BranchID,
+            e.Email,
+            e.Address,
+            e.Birth,
+            e.Role,
+            br.Name AS BranchName
+        FROM Employee e
+        JOIN 
+            Branch br ON e.BranchID = br.branchID
+        WHERE
+            e.Role != 'Bankmanager';`;
+        const [result] = await db.execute(query, []);
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 module.exports = {
     insert_employee,
     get_next_employeeID,
-    get_supervisor
+    get_supervisor,
+    get_employee
 }

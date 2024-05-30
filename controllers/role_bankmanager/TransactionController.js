@@ -37,7 +37,8 @@ const get_transaction_ranking = async (req, res) => {
     try {
         const { startDate, endDate } = req.body;
         const transaction_rank = await transaction_ranking_date_range(startDate, endDate);
-        res.status(200).json({ status: 200, message: "get transaction ranking success", rank: transaction_rank });
+        const all_branch = await get_all_branch();
+        res.status(200).json({ status: 200, message: "get transaction ranking success", rank: transaction_rank, all_branch: all_branch});
     } catch (error) {
         console.log(error);
         res.status(400).json({ status: 400, message: error });

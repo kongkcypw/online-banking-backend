@@ -59,9 +59,34 @@ const get_user_account_list_in_branch = async (branchID) => {
     }
 }
 
+const get_user_account_list_all_branch = async () => {
+    try {
+        const query = `
+        SELECT 
+            a.AccountID,
+            a.UserID,
+            u.FirstName,
+            u.LastName,
+            u.Email,
+            u.IdCard,
+            u.PhoneNumber,
+            a.AccountNumber,
+            a.Balance,
+            a.DateOpen
+        FROM Account a 
+        JOIN 
+            User u ON a.UserID = u.UserID;`
+        const [rows, fields] = await db.query(query, []);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     get_account_info_by_accountID,
     get_account_name_by_accountNumber,
     get_accountID_by_accountNumber,
     get_user_account_list_in_branch,
+    get_user_account_list_all_branch
 }
