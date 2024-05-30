@@ -31,15 +31,15 @@ const check_transactionID_unique = async (transactionID) => {
   }
 }
 
-const insert_new_transaction = async (transactionID, referenceID, destinationID, transactionType, transactionFlow, transactionFee, description) => {
+const insert_new_transaction = async (connection, transactionID, referenceID, destinationID, transactionType, transactionFlow, transactionFee, description) => {
   try {
       const query = `INSERT INTO Transaction (TransactionID, ReferenceID, DestinationID, TransactionType, TransactionFlow, TransactionFee, Description) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      const [result] = await db.execute(query, [transactionID, referenceID, destinationID, transactionType, transactionFlow, transactionFee, description]);
+      const [result] = await connection.execute(query, [transactionID, referenceID, destinationID, transactionType, transactionFlow, transactionFee, description]);
       return result;
   } catch (error) {
       throw error;
   }
-}
+};
 
 module.exports = {
     check_transactionID_unique,

@@ -10,15 +10,15 @@ const check_referenceID_unique = async (referenceID) => {
     }
 }
 
-const insert_new_reference_topup = async (referenceID, amount) => {
+const insert_new_reference_topup = async (connection, referenceID, amount) => {
     try {
         const query = `INSERT INTO Reference (ReferenceID, Amount, DateTime) VALUES (?, ?, NOW())`;
-        const [result] = await db.execute(query, [referenceID, amount]);
+        const [result] = await connection.execute(query, [referenceID, amount]);
         return result;
     } catch (error) {
         throw error;
     }
-}
+};
 
 module.exports = {
     check_referenceID_unique,

@@ -13,6 +13,7 @@ const billRoute = require('./routes/Bill')
 const topupRoute = require('./routes/Topup')
 const bankRoute = require('./routes/Bank')
 const atmRoute = require('./routes/Atm')
+const dashboardRoute = require('./routes/Dashboard')
 
 const app = express();
 
@@ -29,7 +30,7 @@ app.get('/', (req, res) => {
     res.json({ message: "hello server" });
 })
 
-// Dynamic Data (User can insert, update)
+// User
 app.use("/register", registerRoute)
 app.use("/login", loginRoute)
 app.use("/auth", authRoute)
@@ -38,10 +39,11 @@ app.use("/favorite", favoriteRoute)
 app.use("/transaction", transactionRoute)
 app.use("/statement", statementRoute)
 
-// Static Data (Only Exployee can insert, update)
+// Only above employee 
 app.use("/topup", topupRoute)
 app.use("/bill", billRoute)
 app.use("/bank", bankRoute)
 app.use("/atm", atmRoute)
+app.use("/dashboard", dashboardRoute)
 
 module.exports = app;
