@@ -275,9 +275,12 @@ const account_ranking_date_range = async (startDate, endDate) => {
         const query = `SELECT 
             a.AccountID,
             a.AccountNumber,
+            u.FirstName,
+            u.LastName,
             a.BranchID,
             br.Name AS BranchName,
-            SUM(r.Amount) AS TotalAmount
+            SUM(r.Amount) AS TotalAmount,
+            ROUND(AVG(r.Amount), 2) AS AverageAmount
         FROM 
             Reference r
         JOIN 
@@ -287,6 +290,8 @@ const account_ranking_date_range = async (startDate, endDate) => {
         JOIN
             Account a ON t1.DestinationID = a.AccountID
         JOIN
+            User u ON a.UserID = u.UserID
+        JOIN
             Branch br ON a.BranchID = br.BranchID
         WHERE 
             CONVERT_TZ(r.DateTime, 'UTC', 'Asia/Bangkok') >= ? 
@@ -294,8 +299,7 @@ const account_ranking_date_range = async (startDate, endDate) => {
         GROUP BY
             a.AccountID
         ORDER BY
-            TotalAmount DESC
-        LIMIT 1;`;
+            TotalAmount DESC;`;
 
         const [rows, fields] = await db.query(query, [startDate, endDate]);
         return rows;
@@ -307,28 +311,29 @@ const account_ranking_date_range = async (startDate, endDate) => {
 const atm_ranking_date_range = async (startDate, endDate) => {
     try {
         const query = `SELECT 
-            t2.DestinationID,
+            t2.DestinationID AS ATMID,
             br.Name AS BranchName,
-            SUM(r.Amount) AS TotalAmount
+            br.BranchID,
+            SUM(r.Amount) AS TotalAmount,
+            ROUND(AVG(r.Amount), 2) AS AverageAmount
         FROM 
             Reference r
         JOIN 
-            Transaction t1 ON r.ReferenceID = t1.ReferenceID
-        JOIN 
-            Transaction t2 ON r.ReferenceID = t2.ReferenceID AND t1.TransactionID != t2.TransactionID
+            Transaction t2 ON r.ReferenceID = t2.ReferenceID
         JOIN
-            Account a ON t1.DestinationID = a.AccountID
+            ATM atm on atm.ATMID = t2.DestinationID
         JOIN
-            Branch br ON a.BranchID = br.BranchID
+            Branch br ON atm.BranchID = br.BranchID
         WHERE 
             CONVERT_TZ(r.DateTime, 'UTC', 'Asia/Bangkok') >= ? 
             AND CONVERT_TZ(r.DateTime, 'UTC', 'Asia/Bangkok') < ? + INTERVAL 1 DAY
+            AND t2.TransactionType = 'WITHDRAW'
             AND t2.DestinationID LIKE 'ATM%'
         GROUP BY
             t2.DestinationID
         ORDER BY
             TotalAmount DESC
-        LIMIT 1;`;
+        ;`;
 
         const [rows, fields] = await db.query(query, [startDate, endDate]);
         return rows;

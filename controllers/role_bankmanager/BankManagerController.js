@@ -1,5 +1,7 @@
-const { get_next_employeeID, insert_employee, get_supervisor } = require("../../models/EmployeeModel");
+const { get_next_employeeID, insert_employee, get_supervisor, get_employee } = require("../../models/EmployeeModel");
 const bcrypt = require("bcryptjs");
+const { get_user_account_list_all_branch } = require("../../models/join/UserAccountModel");
+const { get_all_branch } = require("../../models/BranchModel");
 
 const register_bankmanager = async (req, res) => {
     try {
@@ -33,7 +35,30 @@ const get_all_supervisor = async(req, res) => {
     }
 } 
 
+const get_all_user_account = async(req, res) => {
+    try {
+        const userList = await get_user_account_list_all_branch();
+        res.status(200).json({ status: 200, message: "Get all user list success", user: userList })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ status: 400, message: error})
+    }
+}
+
+const get_all_employee = async(req, res) => {
+    try {
+        const employee = await get_employee();
+        const branch = await get_all_branch();
+        res.status(200).json({ status: 200, message: "Get all user list success", employee: employee, branch: branch })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ status: 400, message: error})
+    }
+}
+
 module.exports = {
     register_bankmanager,
-    get_all_supervisor
+    get_all_supervisor,
+    get_all_user_account,
+    get_all_employee
 }
